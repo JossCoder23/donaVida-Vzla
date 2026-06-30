@@ -5,6 +5,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -17,7 +18,7 @@ model User {
   email           String      @unique
   password        String
   full_name       String
-  blood_type      String
+  blood_type      String?
   phone           String?
   lat             Decimal?
   lng             Decimal?
@@ -25,7 +26,7 @@ model User {
   role            String
   center_id       String?
   center          DonationCenter? @relation(fields: [center_id], references: [id])
-  appointments    Appointment[]
+  is_active       Boolean  @default(true)
 }
 
 model DonationCenter {
@@ -48,6 +49,7 @@ model BloodRequirement {
   center_id String
   center    DonationCenter @relation(fields: [center_id], references: [id])
   blood_type String
+  amount      Int
   urgency    String
   updated_at DateTime @updatedAt
 }
@@ -55,23 +57,30 @@ model BloodRequirement {
 model Campaign {
   id          String   @id @default(uuid())
   center_id   String
+  // Mantén solo una de estas definiciones:
   center      DonationCenter @relation(fields: [center_id], references: [id])
+  
   title       String
   description String
   start_date  DateTime
   end_date    DateTime
   is_active   Boolean  @default(true)
+
+  appointments Appointment[]
 }
 
 model Appointment {
   id               String         @id @default(uuid())
-  user_id          String
   center_id        String
   campaign_id      String?
+
+  donor_name       String
+  donor_email      String
+  donor_blood_type String
+
   scheduled_at     DateTime
   status           String         @default("PENDING") // PENDING, COMPLETED, CANCELLED
   
-  user             User           @relation(fields: [user_id], references: [id])
   center           DonationCenter @relation(fields: [center_id], references: [id])
   campaign         Campaign?      @relation(fields: [campaign_id], references: [id])
 }

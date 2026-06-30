@@ -2,7 +2,7 @@
   "name": "donavida-backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Jose Pardo Morales",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -27,6 +27,7 @@
     "@nestjs/mapped-types": "^2.1.1",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.4.5",
     "@prisma/client": "^5.15.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",

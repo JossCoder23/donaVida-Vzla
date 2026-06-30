@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { CentersModule } from './centers/centers.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { CampaignsModule } from './campaigns/campaigns.module';
+import { BloodRequirementsModule } from './blood-requirements/blood-requirements.module';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -11,7 +15,11 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true, 
     }),
     CentersModule,
-    PrismaModule
+    PrismaModule,
+    AuthModule,
+    CampaignsModule,
+    BloodRequirementsModule,
+    AppointmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
