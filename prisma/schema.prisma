@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String      @id @default(uuid())
+  email           String      @unique
+  password        String
+  full_name       String
+  blood_type      String
+  phone           String?
+  lat             Decimal?
+  lng             Decimal?
+  last_donation_at DateTime?
+  role            String
+  center_id       String?
+  center          DonationCenter? @relation(fields: [center_id], references: [id])
+  appointments    Appointment[]
+}
+
+model DonationCenter {
+  id               String    @id @default(uuid())
+  name             String
+  address          String
+  lat              Decimal
+  lng              Decimal
+  contact_info     String
+  is_active        Boolean   @default(true)
+  capacity_per_day Int
+  users            User[]
+  requirements     BloodRequirement[]
+  campaigns        Campaign[]
+  appointments     Appointment[]
+}
+
+model BloodRequirement {
+  id        String   @id @default(uuid())
+  center_id String
+  center    DonationCenter @relation(fields: [center_id], references: [id])
+  blood_type String
+  urgency    String
+  updated_at DateTime @updatedAt
+}
+
+model Campaign {
+  id          String   @id @default(uuid())
+  center_id   String
+  center      DonationCenter @relation(fields: [center_id], references: [id])
+  title       String
+  description String
+  start_date  DateTime
+  end_date    DateTime
+  is_active   Boolean  @default(true)
+}
+
+model Appointment {
+  id               String         @id @default(uuid())
+  user_id          String
+  center_id        String
+  campaign_id      String?
+  scheduled_at     DateTime
+  status           String         @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  
+  user             User           @relation(fields: [user_id], references: [id])
+  center           DonationCenter @relation(fields: [center_id], references: [id])
+  campaign         Campaign?      @relation(fields: [campaign_id], references: [id])
+}
