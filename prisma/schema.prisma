@@ -32,16 +32,24 @@ model User {
 model DonationCenter {
   id               String    @id @default(uuid())
   name             String
+  state            String
+  city             String
   address          String
-  lat              Decimal
-  lng              Decimal
-  contact_info     String
-  is_active        Boolean   @default(true)
+  lat              Float?
+  lng              Float?
+  phone            String?
+  hours            String?
+  source           String?
+  is_active        Boolean  @default(true)
+  is_verified      Boolean  @default(true)
+  url              String?
   capacity_per_day Int
-  users            User[]
+  updated_at       DateTime @updatedAt
+
   requirements     BloodRequirement[]
   campaigns        Campaign[]
   appointments     Appointment[]
+  users User[]
 }
 
 model BloodRequirement {

@@ -7,10 +7,41 @@ export class CentersService {
 
   // PÚBLICO: Solo trae los activos
   async findAll() {
-    return this.prisma.donationCenter.findMany({
+    const centers = await this.prisma.donationCenter.findMany({
       where: { is_active: true },
-      include: { requirements: true }
+      include: { 
+        campaigns: true,
+        requirements: true 
+      }
     });
+
+    return centers.map((center) => {
+      // Obtenemos la campaña activa (si hay)
+      const activeCampaign = center.campaigns.find(c => c.is_active);
+      
+      // Obtenemos el requerimiento más urgente (si hay)
+      const urgentRequirement = center.requirements[0]; 
+
+      return {
+        id: center.id, // O si usan un ID específico como "DC-001", lo mapeas aquí
+        estado: center.state || "Distrito Capital",
+        ciudad: center.city || "Caracas",
+        hospital: center.name,
+        direccion: center.address,
+        telefono: center.phone || null,
+        horario: center.hours || "Consultar directamente",
+        campana: activeCampaign ? activeCampaign.title : null,
+        tipoSangre: urgentRequirement ? urgentRequirement.blood_type : "No especificado",
+        fuente: center.source || center.name,
+        url: center.url || null,
+        // Formateamos la fecha a YYYY-MM-DD como lo piden
+        lat: center.lat, 
+        lng: center.lng,
+        fechaActualizacion: center.updated_at.toISOString().split('T')[0],
+        estadoRegistro: center.is_verified ? "Verificado" : "Pendiente",
+      };
+    });
+
   }
 
   async findNearby(lat: number, lng: number) {
