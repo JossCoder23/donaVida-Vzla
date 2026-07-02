@@ -92,4 +92,13 @@ export class CreateCenterDto {
   @IsOptional()
   @IsNumber()
   lng?: number;
+
+  @ApiPropertyOptional({ 
+    example: 'DC-009', 
+    description: 'ID personalizado. Si se omite, la base de datos generará un UUID automáticamente.' 
+  })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
 }
