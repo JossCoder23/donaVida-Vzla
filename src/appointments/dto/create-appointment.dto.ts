@@ -1,29 +1,50 @@
-import { IsString, IsEmail, IsUUID, IsDateString, IsOptional } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsDateString, IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateAppointmentDto {
-  @ApiProperty({ example: 'Juan Pérez' })
+  @ApiProperty({ 
+    example: 'DC-001', 
+    description: 'ID del centro donde se realizará la donación' 
+  })
   @IsString()
-  donor_name!:string;
+  center_id!: string;
 
-  @ApiProperty({ example: 'juan@email.com' })
-  @IsEmail()
-  donor_email!:string;
-
-  @ApiProperty({ example: 'O+' })
-  @IsString()
-  donor_blood_type!:string;
-
-  @ApiProperty({ example: 'uuid-del-centro' })
-  @IsUUID()
-  center_id!:string;
-
-  @ApiProperty({ required: false, example: 'uuid-de-campana' })
-  @IsUUID()
+  @ApiPropertyOptional({ 
+    example: 'CAMP-001', 
+    description: 'ID de la campaña (opcional, solo si la cita viene desde una campaña específica)' 
+  })
   @IsOptional()
-  campaign_id?:string;
+  @IsString()
+  campaign_id?: string;
 
-  @ApiProperty({ example: '2026-07-01T10:00:00Z' })
+  @ApiProperty({ 
+    example: 'Carlos Mendoza', 
+    description: 'Nombre completo del donante' 
+  })
+  @IsString()
+  donor_name!: string;
+
+  @ApiProperty({ 
+    example: 'carlos.mendoza@email.com', 
+    description: 'Correo electrónico de contacto del donante' 
+  })
+  @IsString()
+  donor_email!: string;
+
+  @ApiProperty({ 
+    example: 'O-', 
+    description: 'Tipo de sangre del donante' 
+  })
+  @IsString()
+  donor_blood_type!: string;
+
+  @ApiProperty({ 
+    example: '2026-07-12T10:30:00Z', 
+    description: 'Fecha y hora agendada para la donación (Formato ISO 8601)' 
+  })
   @IsDateString()
-  scheduled_at!:string;
+  scheduled_at!: string;
+
+  // El campo "status" no lo exponemos en el DTO de creación porque 
+  // la base de datos lo inicializa por defecto en "PENDING".
 }
